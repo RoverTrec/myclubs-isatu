@@ -1,0 +1,2342 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyISATU Portal - Student Club Governance & Scheduling</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        isatu: {
+                            navy: '#0A2540',
+                            blue: '#003399',
+                            gold: '#F4B400',
+                            goldHover: '#D99B00',
+                            lightBg: '#F8FAFC',
+                            cardBg: '#FFFFFF'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .isatu-gradient { background: linear-gradient(135deg, #0A2540 0%, #003399 100%); }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="h-full flex flex-col text-slate-800 antialiased selection:bg-isatu-gold selection:text-isatu-navy">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- MAIN NAVIGATION HEADER -->
+    <header class="sticky top-0 z-40 bg-isatu-navy text-white shadow-lg border-b-4 border-isatu-gold">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- Logo & Mobile-Optimized Responsive Branding -->
+                <button onclick="navTo('home')" class="flex items-center gap-2 sm:gap-3 group text-left focus:outline-none rounded-xl p-1 transition-all hover:bg-white/5 max-w-[65%] sm:max-w-none">
+                    <div class="w-10 h-10 sm:w-13 sm:h-13 flex-shrink-0 relative transition-transform duration-300 group-hover:scale-105">
+                        <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-md">
+                            <path d="M100 0 L112 15 L131 6 L139 24 L159 20 L162 40 L181 41 L178 61 L194 68 L185 86 L198 98 L185 110 L194 128 L178 135 L181 155 L162 156 L159 176 L139 172 L131 190 L112 181 L100 196 L88 181 L69 190 L61 172 L41 176 L38 156 L19 155 L22 135 L6 128 L15 110 L2 98 L15 86 L6 68 L22 61 L19 41 L38 40 L41 20 L61 24 L69 6 L88 15 Z" fill="#003399"/>
+                            <circle cx="100" cy="100" r="78" fill="#F4B400" stroke="#002B7F" stroke-width="4"/>
+                            <circle cx="100" cy="100" r="68" fill="none" stroke="#002B7F" stroke-width="12"/>
+                            <circle cx="100" cy="100" r="60" fill="#F4B400"/>
+                            <path d="M50 120 Q 100 140 150 120 L 150 75 Q 100 95 50 75 Z" fill="#FFFFFF" stroke="#002B7F" stroke-width="3"/>
+                            <path d="M100 45 Q 110 60 100 75 Q 90 60 100 45" fill="#FF3300"/>
+                            <path d="M96 68 L104 68 L102 95 L98 95 Z" fill="#002B7F"/>
+                            <ellipse cx="75" cy="100" rx="14" ry="5" fill="none" stroke="#002B7F" stroke-width="2" transform="rotate(30 75 100)"/>
+                            <ellipse cx="75" cy="100" rx="14" ry="5" fill="none" stroke="#002B7F" stroke-width="2" transform="rotate(-30 75 100)"/>
+                            <text x="100" y="172" font-family="Inter, sans-serif" font-size="16" font-weight="900" fill="#FFFFFF" text-anchor="middle">1905</text>
+                        </svg>
+                    </div>
+                    <div class="overflow-hidden">
+                        <h1 class="text-base sm:text-xl md:text-2xl font-extrabold tracking-tight text-white group-hover:text-isatu-gold transition-colors leading-tight truncate">
+                            MyISATU Portal
+                        </h1>
+                        <p class="text-[10px] sm:text-xs font-medium text-amber-300/90 tracking-normal truncate">
+                            Student Governance & Scheduling
+                        </p>
+                    </div>
+                </button>
+
+                <!-- Header Actions -->
+                <div class="flex items-center gap-1.5 sm:gap-3">
+                    <div id="guest-actions" class="flex items-center gap-1.5 sm:gap-2">
+                        <button onclick="openModal('login-modal')" class="px-2.5 py-1.5 sm:px-3.5 sm:py-2 text-xs sm:text-sm font-semibold text-white bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl transition-all flex items-center gap-1.5 backdrop-blur-sm">
+                            <i class="fa-solid fa-right-to-bracket text-isatu-gold"></i>
+                            <span>Login</span>
+                        </button>
+
+                        <!-- Single Unified Application Button -->
+                        <button onclick="openModal('combined-apply-modal')" class="px-2.5 py-1.5 sm:px-3.5 sm:py-2 text-xs sm:text-sm font-semibold text-isatu-navy bg-isatu-gold hover:bg-amber-400 rounded-xl shadow-md transition-all flex items-center gap-1.5 hover:shadow-lg">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            <span>Apply & Register</span>
+                        </button>
+                    </div>
+
+                    <div id="club-logged-actions" class="hidden items-center gap-2 sm:gap-3">
+                        <button onclick="navTo('dashboard')" class="px-3 py-1.5 sm:px-3.5 sm:py-2 text-xs sm:text-sm font-semibold text-white bg-isatu-blue hover:bg-blue-700 rounded-xl transition-all flex items-center gap-2 border border-blue-400/30">
+                            <i class="fa-solid fa-gauge-high text-isatu-gold"></i>
+                            <span id="header-portal-label">Portal</span>
+                        </button>
+                        <button onclick="logoutSession()" class="px-2.5 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm font-semibold text-rose-200 bg-rose-950/40 hover:bg-rose-900/60 rounded-xl border border-rose-800/40 transition-all flex items-center gap-1.5" title="Logout">
+                            <i class="fa-solid fa-power-off"></i>
+                            <span class="hidden md:inline">Logout</span>
+                        </button>
+                    </div>
+
+                    <div id="admin-logged-actions" class="hidden items-center gap-2 sm:gap-3">
+                        <button onclick="navTo('admin')" class="px-3 py-1.5 sm:px-3.5 sm:py-2 text-xs sm:text-sm font-bold text-amber-300 bg-slate-900 hover:bg-slate-950 rounded-xl transition-all flex items-center gap-2 border border-amber-400/40 shadow-inner">
+                            <i class="fa-solid fa-shield-halved text-isatu-gold"></i>
+                            <span>Admin</span>
+                            <span id="header-pending-count" class="hidden px-2 py-0.5 text-[10px] bg-rose-600 text-white font-black rounded-full">0</span>
+                        </button>
+                        <button onclick="logoutSession()" class="px-2.5 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm font-semibold text-rose-200 bg-rose-950/40 hover:bg-rose-900/60 rounded-xl border border-rose-800/40 transition-all flex items-center gap-1.5" title="Logout">
+                            <i class="fa-solid fa-power-off"></i>
+                            <span class="hidden md:inline">Exit</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN VIEW CONTAINER -->
+    <main class="flex-grow">
+        
+        <!-- ================= 1. PUBLIC HOMEPAGE VIEW ================= -->
+        <section id="view-home" class="space-y-8 pb-16">
+            
+            <!-- Hero Banner -->
+            <div class="isatu-gradient text-white py-10 sm:py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden shadow-inner">
+                <div class="absolute -right-10 -bottom-10 opacity-10 pointer-events-none">
+                    <i class="fa-solid fa-calendar-days text-[220px] sm:text-[280px]"></i>
+                </div>
+                <div class="max-w-7xl mx-auto relative z-10">
+                    <div class="max-w-3xl">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-isatu-gold/20 text-amber-300 border border-isatu-gold/30 mb-3">
+                            <i class="fa-solid fa-bullhorn text-xs"></i> ISAT-U Student Affairs Hub
+                        </span>
+                        <h2 class="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight">
+                            Discover & Attend <span class="text-isatu-gold">ISAT-U</span> Events
+                        </h2>
+                        <p class="mt-2 text-slate-200 text-xs sm:text-base leading-relaxed">
+                            Official governance & scheduling directory for recognized student organizations at Iloilo Science and Technology University.
+                        </p>
+                    </div>
+
+                    <!-- Search & Filter Bar -->
+                    <div class="mt-6 sm:mt-8 bg-white p-3 sm:p-4 rounded-2xl shadow-xl text-slate-800 flex flex-col md:flex-row gap-3">
+                        <div class="relative flex-grow">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <input type="text" id="search-input" oninput="renderEvents()" placeholder="Search events by title, description, or venue..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-isatu-blue">
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <select id="filter-club" onchange="renderEvents()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-isatu-blue text-slate-700 min-w-[180px]">
+                                <option value="ALL">All Organizations</option>
+                            </select>
+                            <select id="filter-date" onchange="renderEvents()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-isatu-blue text-slate-700">
+                                <option value="ALL">All Dates</option>
+                                <option value="UPCOMING">Upcoming Events</option>
+                                <option value="TODAY">Today</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Grid: Expandable Events & Expandable Clubs -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    
+                    <!-- Left Feed: Interactive Expandable Events -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="flex items-center justify-between border-b border-slate-200 pb-4">
+                            <div>
+                                <h3 class="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
+                                    <i class="fa-regular fa-calendar-check text-isatu-blue"></i>
+                                    Event Calendar Feed
+                                </h3>
+                                <p class="text-xs text-slate-500">Click any event card below to expand full details</p>
+                            </div>
+                            <span id="event-count-badge" class="px-2.5 py-1 bg-slate-200 text-slate-700 rounded-full text-xs font-bold">
+                                0 Events
+                            </span>
+                        </div>
+
+                        <div id="events-container" class="grid grid-cols-1 gap-4">
+                            <!-- Injected Events -->
+                        </div>
+
+                        <div id="events-empty" class="hidden bg-white rounded-2xl p-12 text-center border border-dashed border-slate-300">
+                            <div class="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fa-solid fa-calendar-xmark text-2xl"></i>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800">No Events Found</h4>
+                            <p class="text-sm text-slate-500 max-w-sm mx-auto mt-1">There are no scheduled activities matching your search or filter selection.</p>
+                            <button onclick="clearFilters()" class="mt-4 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition-colors">
+                                Reset Filters
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Right Sidebar: Interactive Expandable Clubs Directory -->
+                    <div class="space-y-6">
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sticky top-28">
+                            <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
+                                <div>
+                                    <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                                        <i class="fa-solid fa-users text-isatu-gold"></i>
+                                        Recognized Clubs
+                                    </h3>
+                                    <p class="text-xs text-slate-500">Click a club to view leadership & info</p>
+                                </div>
+                                <span id="club-count-badge" class="px-2 py-0.5 bg-isatu-blue/10 text-isatu-blue rounded-md text-xs font-bold">
+                                    0 Approved
+                                </span>
+                            </div>
+
+                            <div id="clubs-directory" class="space-y-3 max-h-[550px] overflow-y-auto pr-1 custom-scrollbar">
+                                <!-- Injected Clubs -->
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= 2. CLUB PORTAL / DASHBOARD VIEW ================= -->
+        <section id="view-dashboard" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+            
+            <!-- Dashboard Banner Header -->
+            <div id="dash-banner" class="bg-gradient-to-r from-isatu-navy via-slate-900 to-isatu-blue rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+                <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div>
+                        <div class="flex items-center gap-2 flex-wrap mb-1">
+                            <span id="dash-status-pill" class="px-3 py-1 text-xs font-bold rounded-full uppercase tracking-wider">
+                                STATUS
+                            </span>
+                            <span id="dash-verified-pill" class="px-3 py-1 text-xs font-bold rounded-full uppercase tracking-wider">
+                                VERIFICATION
+                            </span>
+                            <span id="dash-category-pill" class="text-xs font-medium text-slate-300">
+                                Category
+                            </span>
+                        </div>
+                        <h2 id="dash-club-name" class="text-2xl sm:text-3xl font-black tracking-tight">
+                            <!-- Dynamic Club Name -->
+                        </h2>
+                        <p id="dash-club-president" class="text-slate-300 text-sm mt-1">
+                            <!-- Dynamic President -->
+                        </p>
+                    </div>
+
+                    <div id="dash-header-actions" class="flex flex-wrap items-center gap-3">
+                        <button onclick="openModal('add-event-modal')" class="px-4 py-2.5 bg-isatu-gold hover:bg-amber-400 text-isatu-navy font-bold rounded-xl text-sm shadow-md transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-plus"></i>
+                            <span>Create Event</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bylaws & Verification Banner -->
+            <div id="dash-bylaws-notice" class="hidden rounded-2xl p-6 bg-amber-50 border border-amber-200 text-amber-900 shadow-sm">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-200 text-amber-800 flex items-center justify-center text-2xl flex-shrink-0">
+                            <i class="fa-solid fa-certificate"></i>
+                        </div>
+                        <div>
+                            <span class="px-2.5 py-0.5 rounded-md bg-amber-200 text-amber-900 font-extrabold text-[10px] uppercase">Subject to Approval</span>
+                            <h4 class="text-base font-bold text-amber-950 mt-0.5">Upload Organization Bylaws for Verification</h4>
+                            <p class="text-xs text-amber-800 mt-0.5 leading-relaxed">
+                                Submit official constitution & bylaws for Main Admin approval to earn <strong>Verified Status</strong>.
+                            </p>
+                            <p id="bylaws-status-text" class="text-xs font-bold text-isatu-blue mt-1.5"></p>
+                        </div>
+                    </div>
+
+                    <button onclick="openModal('bylaws-modal')" class="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold rounded-xl text-xs shadow transition-all whitespace-nowrap flex items-center gap-2">
+                        <i class="fa-solid fa-file-arrow-up"></i> Submit Bylaws
+                    </button>
+                </div>
+            </div>
+
+            <div id="dash-status-notice" class="hidden rounded-2xl p-6 border shadow-sm">
+                <!-- JS Injected -->
+            </div>
+
+            <!-- Dashboard Main Content Grid -->
+            <div id="dash-main-content" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Left Column (2 cols): Events, Membership Applications, Officer Member Management -->
+                <div class="lg:col-span-2 space-y-6">
+                    
+                    <!-- Managed Events Section -->
+                    <div id="section-managed-events" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-list-check text-isatu-blue"></i>
+                                    Managed Events
+                                </h3>
+                                <p class="text-xs text-slate-500">Post and maintain your organization's public schedules</p>
+                            </div>
+                            <button id="btn-publish-event-top" onclick="openModal('add-event-modal')" class="px-3 py-1.5 bg-isatu-blue text-white text-xs font-semibold rounded-lg hover:bg-blue-800 transition-all">
+                                + Publish Event
+                            </button>
+                        </div>
+
+                        <div id="dash-events-list" class="space-y-4">
+                            <!-- JS Injected -->
+                        </div>
+
+                        <div id="dash-events-empty" class="hidden text-center py-12 border-2 border-dashed border-slate-200 rounded-xl">
+                            <i class="fa-solid fa-calendar-plus text-4xl text-slate-300 mb-3"></i>
+                            <p class="text-sm font-semibold text-slate-700">No Events Posted Yet</p>
+                            <p class="text-xs text-slate-500 max-w-xs mx-auto mt-1 mb-4">Start by scheduling an event to notify ISAT-U students.</p>
+                            <button id="btn-publish-event-empty" onclick="openModal('add-event-modal')" class="px-4 py-2 bg-isatu-blue text-white text-xs font-bold rounded-lg shadow hover:bg-blue-800 transition-colors">
+                                Post Your First Event
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Student Member Applications -->
+                    <div id="section-member-apps" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-user-graduate text-isatu-gold"></i>
+                                    Student Membership Applications
+                                </h3>
+                                <p class="text-xs text-slate-500">Review student requests to join your organization</p>
+                            </div>
+                            <span id="dash-member-apps-count" class="px-2.5 py-1 bg-blue-100 text-isatu-blue text-xs font-bold rounded-full">0 Requests</span>
+                        </div>
+
+                        <div id="dash-member-apps-list" class="space-y-3">
+                            <!-- Injected Applications -->
+                        </div>
+                    </div>
+
+                    <!-- Manage Approved Club Members & Roles & Warnings -->
+                    <div id="section-manage-members" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-users-gear text-isatu-blue"></i>
+                                    Manage Roster & Assign Officer Roles
+                                </h3>
+                                <p class="text-xs text-slate-500">Executive Officers can give warnings; Presidents can assign Officer roles.</p>
+                            </div>
+                            <span id="dash-approved-members-count" class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full">0 Members</span>
+                        </div>
+
+                        <div id="dash-approved-members-list" class="space-y-3">
+                            <!-- Injected Approved Members -->
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Right Column (1 col): Internal Chat, Member Profile Settings & Club Profile -->
+                <div class="space-y-6">
+                    
+                    <!-- Intra-Org Member Chat Room -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col h-[480px]">
+                        <div class="pb-3 border-b border-slate-100 mb-3 flex items-center justify-between">
+                            <div>
+                                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-comments text-isatu-blue"></i>
+                                    Internal Member Chat
+                                </h3>
+                                <p class="text-[11px] text-slate-500">Private channel for approved club members</p>
+                            </div>
+                            <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse" title="Live Channel"></span>
+                        </div>
+
+                        <div id="club-chat-messages" class="flex-grow overflow-y-auto space-y-3 pr-1 custom-scrollbar text-xs">
+                            <!-- JS Injected Chat Messages -->
+                        </div>
+
+                        <form onsubmit="handleSendClubChatMessage(event)" class="mt-3 pt-2 border-t border-slate-100 flex gap-2">
+                            <input type="text" id="chat-input-text" required placeholder="Message organization members..." class="flex-grow px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-isatu-blue focus:outline-none">
+                            <button type="submit" class="px-3.5 py-2 bg-isatu-blue hover:bg-blue-800 text-white font-bold rounded-xl text-xs transition-all flex items-center justify-center">
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Personal Profile Settings for Members & Officers -->
+                    <div id="section-member-profile" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                        <div class="pb-4 border-b border-slate-100 mb-5">
+                            <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-id-card text-isatu-gold"></i>
+                                My Personal Profile Settings
+                            </h3>
+                            <p class="text-xs text-slate-500">Update your account credentials within this organization</p>
+                        </div>
+
+                        <form id="edit-member-profile-form" onsubmit="handleSaveMemberPersonalProfile(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Full Name</label>
+                                <input type="text" id="edit-my-name" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Email Address</label>
+                                <input type="email" id="edit-my-email" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none">
+                            </div>
+
+                            <div id="member-course-field">
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Course & Year Level</label>
+                                <input type="text" id="edit-my-course" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Password</label>
+                                <input type="password" id="edit-my-pass" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none">
+                            </div>
+
+                            <button type="submit" class="w-full py-3 bg-isatu-blue hover:bg-blue-800 text-white font-bold rounded-xl text-sm shadow transition-all">
+                                Update My Personal Details
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Club Profile Settings (Officers Only) -->
+                    <div id="section-club-profile" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                        <div class="pb-4 border-b border-slate-100 mb-5">
+                            <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-sliders text-isatu-gold"></i>
+                                Club Profile Settings
+                            </h3>
+                            <p class="text-xs text-slate-500">Update public organization details (President strictly set by Main Admin)</p>
+                        </div>
+
+                        <form id="edit-club-form" onsubmit="handleSaveClubProfile(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Club Name</label>
+                                <input type="text" id="edit-club-name" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Club President (Admin Controlled)</label>
+                                <input type="text" id="edit-club-president" disabled title="Only Main Admin can reassign Club President" class="w-full px-3.5 py-2.5 bg-slate-200 border border-slate-300 rounded-xl text-sm cursor-not-allowed text-slate-600 font-semibold">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Meeting Location / Room</label>
+                                <input type="text" id="edit-club-room" placeholder="e.g. CEA Room 302" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Contact Email</label>
+                                <input type="email" id="edit-club-email" placeholder="club@isatu.edu.ph" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Description / Bio</label>
+                                <textarea id="edit-club-bio" rows="3" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none"></textarea>
+                            </div>
+
+                            <button type="submit" class="w-full py-3 bg-isatu-navy hover:bg-slate-900 text-white font-bold rounded-xl text-sm shadow transition-all">
+                                Save Organization Details
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= 3. MAIN ADMIN MASTER PORTAL VIEW ================= -->
+        <section id="view-admin" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+            
+            <!-- Admin Top Banner -->
+            <div class="bg-gradient-to-r from-slate-900 via-isatu-navy to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl border-b-4 border-amber-400">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <span class="px-3 py-1 bg-amber-400/20 text-amber-300 text-xs font-extrabold rounded-full border border-amber-400/30 uppercase tracking-wider">
+                            <i class="fa-solid fa-crown mr-1"></i> Master Admin Access
+                        </span>
+                        <h2 class="text-2xl sm:text-3xl font-black mt-2 tracking-tight">
+                            University Student Affairs Governance
+                        </h2>
+                        <p class="text-slate-300 text-sm mt-1">
+                            Approve registration applications, evaluate bylaws, and reassign Club Presidents.
+                        </p>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <div class="bg-slate-800/80 px-4 py-2 rounded-2xl border border-slate-700 text-center">
+                            <span class="block text-xs text-slate-400">Pending Orgs</span>
+                            <span id="admin-pending-pill-count" class="text-xl font-black text-amber-400">0</span>
+                        </div>
+                        <div class="bg-slate-800/80 px-4 py-2 rounded-2xl border border-slate-700 text-center">
+                            <span class="block text-xs text-slate-400">Bylaws Reviews</span>
+                            <span id="admin-bylaws-pill-count" class="text-xl font-black text-amber-300">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Section 1: Pending Club Applications -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-hourglass-half text-amber-500"></i>
+                            Pending Registration Applications
+                        </h3>
+                        <p class="text-xs text-slate-500">Organizations waiting for initial Main Admin registration approval</p>
+                    </div>
+                    <span id="admin-pending-badge" class="px-2.5 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full">
+                        0 Pending
+                    </span>
+                </div>
+
+                <div id="admin-pending-list" class="grid grid-cols-1 gap-4">
+                    <!-- Injected Pending Applications -->
+                </div>
+
+                <div id="admin-pending-empty" class="hidden text-center py-8 text-slate-400 border border-dashed rounded-xl">
+                    <i class="fa-solid fa-check-double text-3xl mb-2 text-slate-300"></i>
+                    <p class="text-sm font-semibold text-slate-600">No Pending Applications</p>
+                </div>
+            </div>
+
+            <!-- Admin Section 2: Submitted Bylaws Verification Review -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-certificate text-amber-500"></i>
+                            Bylaws Verification Requests
+                        </h3>
+                        <p class="text-xs text-slate-500">Review submitted constitution documents to award Verified Status</p>
+                    </div>
+                    <span id="admin-bylaws-badge" class="px-2.5 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full">
+                        0 Requests
+                    </span>
+                </div>
+
+                <div id="admin-bylaws-list" class="grid grid-cols-1 gap-4">
+                    <!-- Injected Bylaws Requests -->
+                </div>
+
+                <div id="admin-bylaws-empty" class="hidden text-center py-8 text-slate-400 border border-dashed rounded-xl">
+                    <i class="fa-solid fa-shield-check text-3xl mb-2 text-slate-300"></i>
+                    <p class="text-sm font-semibold text-slate-600">No Submitted Bylaws Awaiting Review</p>
+                </div>
+            </div>
+
+            <!-- Admin Section 3: Expandable Recognized Clubs Directory & President Reassignment -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-building-shield text-isatu-blue"></i>
+                            Recognized Student Organizations Directory
+                        </h3>
+                        <p class="text-xs text-slate-500">Click any organization to view full member rosters or reassign President</p>
+                    </div>
+                    <span id="admin-active-badge" class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full">
+                        0 Clubs
+                    </span>
+                </div>
+
+                <div id="admin-clubs-list" class="grid grid-cols-1 gap-4">
+                    <!-- Injected Interactive Expandable Active Clubs -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER WITH HIDDEN SUBTLE MAIN ADMIN ACCESS BUTTON -->
+    <footer class="bg-isatu-navy text-white border-t-4 border-isatu-gold py-8 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-400">
+            <div>
+                <p class="font-bold text-sm text-white">Iloilo Science and Technology University</p>
+                <p class="mt-0.5">MyISATU Portal &copy; Centralized Student Club Governance & Scheduling System</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="hover:text-amber-400 cursor-pointer transition-colors" onclick="navTo('home')">Home Calendar</span>
+                <span>&bull;</span>
+                <span class="hover:text-amber-400 cursor-pointer transition-colors" onclick="openModal('login-modal')">Club Login</span>
+                <span>&bull;</span>
+                <button onclick="openModal('admin-login-modal')" class="hover:text-amber-300 text-slate-500 transition-colors flex items-center gap-1 opacity-60 hover:opacity-100">
+                    <i class="fa-solid fa-lock text-[10px]"></i> Main Admin
+                </button>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- ================= ALL MODALS ================= -->
+
+    <!-- 1. UNIFIED COMBINED APPLICATION MODAL (Netlify Enabled) -->
+    <div id="combined-apply-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-100 transform transition-all">
+            <div class="isatu-gradient p-6 text-white relative">
+                <button onclick="closeModal('combined-apply-modal')" class="absolute right-5 top-5 text-slate-300 hover:text-white text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <i class="fa-solid fa-pen-to-square text-3xl text-isatu-gold mb-2"></i>
+                <h3 class="text-xl font-bold">Registration & Applications</h3>
+                <p class="text-xs text-slate-200">Apply to form a new club or join an existing organization</p>
+            </div>
+
+            <!-- Tab Switcher -->
+            <div class="flex border-b border-slate-200 bg-slate-50 px-6 pt-3 gap-4">
+                <button type="button" onclick="switchApplyTab('new-club')" id="tab-apply-club" class="pb-2 text-xs font-bold border-b-2 border-isatu-blue text-isatu-blue transition-all">
+                    Apply New Club
+                </button>
+                <button type="button" onclick="switchApplyTab('join-club')" id="tab-apply-member" class="pb-2 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-all">
+                    Join Existing Club
+                </button>
+            </div>
+
+            <!-- Form A: New Club Application -->
+            <form id="apply-form" name="club-application" method="POST" netlify data-netlify="true" onsubmit="handleApplyClub(event)" class="p-6 space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar">
+                <input type="hidden" name="form-name" value="club-application" />
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Proposed Club Name *</label>
+                    <input type="text" name="club_name" id="app-club-name" required placeholder="e.g. Artificial Intelligence Researchers" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Club Login Password *</label>
+                        <input type="password" name="club_password" id="app-password" required placeholder="Create club password" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Category *</label>
+                        <select name="category" id="app-category" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none text-slate-800">
+                            <option value="Academic & Tech">Academic & Tech</option>
+                            <option value="Arts & Culture">Arts & Culture</option>
+                            <option value="Sports & Recreation">Sports & Recreation</option>
+                            <option value="Civic & Advocacy">Civic & Advocacy</option>
+                            <option value="Media & Publications">Media & Publications</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">President / Lead *</label>
+                        <input type="text" name="president" id="app-president" required placeholder="e.g. Maria Santos" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Official Email *</label>
+                        <input type="email" name="email" id="app-email" required placeholder="club@isatu.edu.ph" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Meeting Room / Base (Optional)</label>
+                    <input type="text" name="room" id="app-room" placeholder="e.g. CEA Room 204" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Mission / Statement of Purpose *</label>
+                    <textarea name="bio" id="app-bio" rows="3" required placeholder="Describe the objectives and student benefits of your club..." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none"></textarea>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full py-3.5 bg-isatu-gold hover:bg-amber-400 text-isatu-navy font-bold rounded-xl text-sm shadow-md transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        Submit Club Application
+                    </button>
+                </div>
+            </form>
+
+            <!-- Form B: Student Membership Application -->
+            <form id="student-join-form" name="membership-application" method="POST" netlify data-netlify="true" onsubmit="handleStudentApply(event)" class="p-6 space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar hidden">
+                <input type="hidden" name="form-name" value="membership-application" />
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Target Organization *</label>
+                    <select name="target_club" id="join-club-select" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none text-slate-800">
+                        <option value="" disabled selected>-- Select a Recognized Club --</option>
+                        <!-- Injected -->
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Full Name *</label>
+                        <input type="text" name="full_name" id="join-name" required placeholder="e.g. Maria Clara" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Password / Student ID *</label>
+                        <input type="password" name="password" id="join-password" required placeholder="Password for member login" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Course & Year Level *</label>
+                        <input type="text" name="course" id="join-course" required placeholder="e.g. BSIT 2-A" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Email Address *</label>
+                        <input type="email" name="email" id="join-email" required placeholder="student@isatu.edu.ph" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Reason for Joining *</label>
+                    <textarea name="reason" id="join-reason" rows="3" required placeholder="Share your skills or interest in joining this club..." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none"></textarea>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full py-3.5 bg-isatu-blue hover:bg-blue-800 text-white font-bold rounded-xl text-sm shadow-md transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        Submit Membership Application
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. LOGIN MODAL (OFFICER WITH POSITIONS & MEMBER) -->
+    <div id="login-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-100 transform transition-all">
+            <div class="isatu-gradient p-6 text-white relative">
+                <button onclick="closeModal('login-modal')" class="absolute right-5 top-5 text-slate-300 hover:text-white text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <i class="fa-solid fa-key text-3xl text-isatu-gold mb-2"></i>
+                <h3 class="text-xl font-bold">Portal Sign In</h3>
+                <p class="text-xs text-slate-200">Select your role to access your respective dashboard</p>
+            </div>
+
+            <!-- Login Role Tabs -->
+            <div class="flex border-b border-slate-200 bg-slate-50 px-6 pt-3 gap-4">
+                <button type="button" onclick="switchLoginRole('officer')" id="tab-officer" class="pb-2 text-xs font-bold border-b-2 border-isatu-blue text-isatu-blue transition-all">
+                    Club Officer Login
+                </button>
+                <button type="button" onclick="switchLoginRole('member')" id="tab-member" class="pb-2 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-all">
+                    Member Login
+                </button>
+            </div>
+            
+            <!-- Officer Form with Position Dropdown -->
+            <form id="club-officer-login-form" onsubmit="handleClubOfficerLogin(event)" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Select Organization *</label>
+                    <select id="login-club-select" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none text-slate-800">
+                        <option value="" disabled selected>-- Choose your organization --</option>
+                        <!-- JS Injected -->
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Officer Position / Title *</label>
+                    <select id="login-officer-position" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none text-slate-800">
+                        <option value="President">President</option>
+                        <option value="Vice President">Vice President</option>
+                        <option value="Secretary">Secretary</option>
+                        <option value="Treasurer">Treasurer</option>
+                        <option value="Auditor">Auditor</option>
+                        <option value="Appointee 1">Appointee 1</option>
+                        <option value="Appointee 2">Appointee 2</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Shared Club Password *</label>
+                    <input type="password" id="login-club-password" required placeholder="Enter shared club password" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none">
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full py-3 bg-isatu-blue hover:bg-blue-800 text-white font-bold rounded-xl text-sm shadow-md transition-all">
+                        Login as Club Officer
+                    </button>
+                </div>
+            </form>
+
+            <!-- Member Form -->
+            <form id="club-member-login-form" onsubmit="handleClubMemberLogin(event)" class="p-6 space-y-4 hidden">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Member Email Address *</label>
+                    <input type="email" id="login-member-email" required placeholder="student@isatu.edu.ph" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Password / Student ID *</label>
+                    <input type="password" id="login-member-password" required placeholder="Enter password used during application" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none">
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full py-3 bg-isatu-gold hover:bg-amber-400 text-isatu-navy font-bold rounded-xl text-sm shadow-md transition-all">
+                        Login as Member
+                    </button>
+                </div>
+            </form>
+
+            <div class="px-6 pb-6 text-center text-xs border-t border-slate-100 pt-3 flex items-center justify-between">
+                <span class="text-slate-500">Want to join a club?</span>
+                <button type="button" onclick="closeModal('login-modal'); openModal('combined-apply-modal'); switchApplyTab('join-club');" class="text-isatu-blue font-bold hover:underline">
+                    Apply for Membership
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. MAIN ADMIN LOGIN MODAL -->
+    <div id="admin-login-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-100 transform transition-all">
+            <div class="bg-slate-900 p-6 text-white relative border-b-4 border-amber-400">
+                <button onclick="closeModal('admin-login-modal')" class="absolute right-5 top-5 text-slate-400 hover:text-white text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <i class="fa-solid fa-shield-halved text-3xl text-amber-400 mb-2"></i>
+                <h3 class="text-xl font-bold">Main Admin Master Access</h3>
+                <p class="text-xs text-slate-300">University Student Affairs Administrator Portal</p>
+            </div>
+            
+            <form id="admin-login-form" onsubmit="handleAdminLogin(event)" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Master Password *</label>
+                    <input type="password" id="admin-password" required placeholder="Enter admin password" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-amber-400 focus:outline-none">
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full py-3 bg-slate-900 hover:bg-slate-950 text-amber-300 font-bold rounded-xl text-sm shadow-md transition-all border border-amber-400/30">
+                        Authenticate Master Access
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 4. UPLOAD BYLAWS MODAL (Netlify Enabled) -->
+    <div id="bylaws-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-100 transform transition-all">
+            <div class="bg-slate-900 p-6 text-white relative border-b-4 border-amber-400">
+                <button onclick="closeModal('bylaws-modal')" class="absolute right-5 top-5 text-slate-300 hover:text-white text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <i class="fa-solid fa-file-contract text-3xl text-amber-400 mb-2"></i>
+                <h3 class="text-xl font-bold">Submit Club Bylaws / Constitution</h3>
+                <p class="text-xs text-slate-300">Submit official documentation to request Verified Status</p>
+            </div>
+            
+            <form id="bylaws-form" name="bylaws-submission" method="POST" netlify data-netlify="true" onsubmit="handleUploadBylaws(event)" class="p-6 space-y-4">
+                <input type="hidden" name="form-name" value="bylaws-submission" />
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Bylaws Document Title *</label>
+                    <input type="text" name="bylaws_title" id="bylaws-title" required placeholder="e.g. Approved 2026 Club Constitution & Bylaws" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-amber-400 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Bylaws Content / Summary / Drive Link *</label>
+                    <textarea name="bylaws_content" id="bylaws-content" rows="4" required placeholder="Paste constitution text, key rules, or official link to your signed bylaws PDF document..." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-amber-400 focus:outline-none"></textarea>
+                </div>
+
+                <div class="pt-2 flex justify-end gap-3">
+                    <button type="button" onclick="closeModal('bylaws-modal')" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-xl text-sm shadow-md transition-all">
+                        Submit for Admin Approval
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 5. PUBLISH / EDIT EVENT MODAL -->
+    <div id="add-event-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-100 transform transition-all">
+            <div class="isatu-gradient p-6 text-white relative">
+                <button onclick="closeModal('add-event-modal')" class="absolute right-5 top-5 text-white/70 hover:text-white text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <h3 id="event-modal-title" class="text-xl font-bold">Publish New Event</h3>
+                <p class="text-xs text-slate-200">Post an activity schedule on the public ISAT-U student portal</p>
+            </div>
+            
+            <form id="event-form" onsubmit="handleSaveEvent(event)" class="p-6 space-y-4 max-h-[85vh] overflow-y-auto custom-scrollbar">
+                <input type="hidden" id="event-id">
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Event Title *</label>
+                    <input type="text" id="event-title" required placeholder="e.g. Annual CodeSprint Hackathon 2026" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Date *</label>
+                        <input type="date" id="event-date" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none text-slate-700">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Venue / Location *</label>
+                        <input type="text" id="event-location" required placeholder="e.g. ISAT-U Gymnasium" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Start Time *</label>
+                        <input type="time" id="event-start-time" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none text-slate-700">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">End Time *</label>
+                        <input type="time" id="event-end-time" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none text-slate-700">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Event Details / Description *</label>
+                    <textarea id="event-description" rows="4" required placeholder="Describe what will happen, registration guidelines, or requirements..." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-isatu-blue focus:outline-none"></textarea>
+                </div>
+
+                <div class="pt-2 flex justify-end gap-3">
+                    <button type="button" onclick="closeModal('add-event-modal')" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-6 py-2.5 bg-isatu-blue hover:bg-blue-800 text-white font-bold rounded-xl text-sm shadow-md transition-all">
+                        Save & Publish
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- ================= JAVASCRIPT APPLICATION LOGIC ================= -->
+    <script>
+        // MASTER ADMIN PASSWORD
+        const ADMIN_MASTER_PASSWORD = "ThisisISATU";
+
+        // INITIAL PRE-EXISTING CLUBS
+        const INITIAL_CLUBS = [
+            { id: "c1", name: "Science & Innovation Club", pass: "sci123", category: "Academic & Tech", president: "Dr. Alex Reyes", room: "Innovation Lab 102", email: "science@isatu.edu.ph", bio: "Fostering scientific curiosity, research initiatives, and technological innovation across campus.", status: "Approved", isVerified: true, bylawsStatus: "Approved" },
+            { id: "c2", name: "Debate Society", pass: "deb456", category: "Civic & Advocacy", president: "Maria Santos", room: "Humanities Hall B", email: "debate@isatu.edu.ph", bio: "Promoting eloquent discourse, critical thinking, and competitive parliamentary debate.", status: "Approved", isVerified: true, bylawsStatus: "Approved" },
+            { id: "c3", name: "Environmental Alliance", pass: "env789", category: "Civic & Advocacy", president: "Carlos Lopez", room: "Eco-Center Pavilion", email: "green@isatu.edu.ph", bio: "Championing sustainability, campus recycling, and environmental awareness campaigns.", status: "Approved", isVerified: true, bylawsStatus: "Approved" },
+            { id: "c4", name: "Coding & Tech Guild", pass: "tech321", category: "Academic & Tech", president: "Ethan Garcia", room: "CEA Computer Lab 4", email: "techguild@isatu.edu.ph", bio: "Building software projects, hosting hackathons, and teaching modern coding stacks.", status: "Approved", isVerified: true, bylawsStatus: "Approved" },
+            { id: "c5", name: "Fine Arts & Crafts", pass: "art654", category: "Arts & Culture", president: "Samantha Cruz", room: "Art Studio 201", email: "arts@isatu.edu.ph", bio: "Nurturing creative expression through painting, sculpting, graphic design, and handicrafts.", status: "Approved", isVerified: true, bylawsStatus: "Approved" }
+        ];
+
+        // INITIAL SAMPLE EVENTS
+        const INITIAL_EVENTS = [
+            {
+                id: "e1",
+                clubId: "c4",
+                clubName: "Coding & Tech Guild",
+                title: "ISAT-U CodeSprint Hackathon 2026",
+                date: "2026-11-15",
+                startTime: "09:00",
+                endTime: "17:00",
+                location: "CEA Auditorium & Computer Labs",
+                description: "Join us for an intensive 8-hour coding marathon! Build web applications addressing local campus solutions. Open to all students!"
+            },
+            {
+                id: "e2",
+                clubId: "c1",
+                clubName: "Science & Innovation Club",
+                title: "Annual STEM & Research Expo",
+                date: "2026-11-20",
+                startTime: "08:30",
+                endTime: "16:00",
+                location: "Multipurpose Cultural Center",
+                description: "Exhibition of student scientific research, engineering prototypes, and interactive physics and chemistry demonstrations."
+            }
+        ];
+
+        // INITIAL CHATS
+        const INITIAL_CHATS = [
+            { id: "msg1", clubId: "c4", sender: "Ethan Garcia (President)", text: "Welcome to the Coding Guild private channel! Team projects update coming soon.", time: "10:30 AM" },
+            { id: "msg2", clubId: "c4", sender: "Guild Member", text: "Excited for the upcoming Hackathon event!", time: "10:32 AM" }
+        ];
+
+        // INITIAL MEMBERS WITH ROLES & WARNINGS
+        const INITIAL_MEMBERS = [
+            { id: "m1", clubId: "c4", name: "John Doe", studentId: "2024-00123", course: "BSIT 2-A", email: "john@isatu.edu.ph", password: "password123", status: "Approved", role: "Vice President", warnings: 0, date: "2026-10-01" },
+            { id: "m2", clubId: "c4", name: "Jane Smith", studentId: "2024-00456", course: "BSCS 3-B", email: "jane@isatu.edu.ph", password: "password123", status: "Approved", role: "Member", warnings: 1, warningReason: "Unexcused absence during mandatory meeting", date: "2026-10-05" },
+            { id: "m3", clubId: "c4", name: "Pending Applicant Student", studentId: "2026-99999", course: "BSCS 1-B", email: "pending@isatu.edu.ph", password: "password123", status: "Pending", role: "Member", warnings: 0, date: "2026-11-05" }
+        ];
+
+        // STATE PERSISTENCE IN LOCAL STORAGE
+        let clubs = JSON.parse(localStorage.getItem('myisatu_v5_clubs')) || INITIAL_CLUBS;
+        let events = JSON.parse(localStorage.getItem('myisatu_v5_events')) || INITIAL_EVENTS;
+        let memberApplications = JSON.parse(localStorage.getItem('myisatu_v5_member_apps')) || INITIAL_MEMBERS;
+        let chats = JSON.parse(localStorage.getItem('myisatu_v5_chats')) || INITIAL_CHATS;
+        let currentSession = JSON.parse(localStorage.getItem('myisatu_v5_session')) || null;
+
+        // Expanded Card Tracking Sets
+        let expandedEvents = new Set();
+        let expandedClubs = new Set();
+        let expandedAdminClubs = new Set();
+
+        // APPLICATION INITIALIZATION
+        window.addEventListener('DOMContentLoaded', () => {
+            saveToStorage();
+            populateClubDropdowns();
+            renderEvents();
+            renderClubsDirectory();
+            updateNavigationUI();
+        });
+
+        function saveToStorage() {
+            localStorage.setItem('myisatu_v5_clubs', JSON.stringify(clubs));
+            localStorage.setItem('myisatu_v5_events', JSON.stringify(events));
+            localStorage.setItem('myisatu_v5_member_apps', JSON.stringify(memberApplications));
+            localStorage.setItem('myisatu_v5_chats', JSON.stringify(chats));
+            localStorage.setItem('myisatu_v5_session', JSON.stringify(currentSession));
+        }
+
+        // ROUTING & NAVIGATION MANAGEMENT
+        function navTo(view) {
+            const homeView = document.getElementById('view-home');
+            const dashView = document.getElementById('view-dashboard');
+            const adminView = document.getElementById('view-admin');
+
+            homeView.classList.add('hidden');
+            dashView.classList.add('hidden');
+            adminView.classList.add('hidden');
+
+            if (view === 'dashboard') {
+                if (!currentSession || (currentSession.role !== 'club' && currentSession.role !== 'member')) {
+                    showToast('Please login to your account first.', 'error');
+                    openModal('login-modal');
+                    homeView.classList.remove('hidden');
+                    return;
+                }
+                dashView.classList.remove('hidden');
+                renderClubDashboard();
+            } else if (view === 'admin') {
+                if (!currentSession || currentSession.role !== 'admin') {
+                    showToast('Main Admin authentication required.', 'error');
+                    openModal('admin-login-modal');
+                    homeView.classList.remove('hidden');
+                    return;
+                }
+                adminView.classList.remove('hidden');
+                renderAdminDashboard();
+            } else {
+                homeView.classList.remove('hidden');
+                renderEvents();
+                renderClubsDirectory();
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateNavigationUI() {
+            const guestActions = document.getElementById('guest-actions');
+            const clubActions = document.getElementById('club-logged-actions');
+            const adminActions = document.getElementById('admin-logged-actions');
+            const portalLabel = document.getElementById('header-portal-label');
+
+            guestActions.classList.add('hidden');
+            clubActions.classList.add('hidden');
+            adminActions.classList.add('hidden');
+
+            const pendingCount = clubs.filter(c => c.status === 'Pending').length;
+            const bylawsPendingCount = clubs.filter(c => c.bylawsStatus === 'Pending Review').length;
+            const headerPendingBadge = document.getElementById('header-pending-count');
+
+            const totalAdminAlerts = pendingCount + bylawsPendingCount;
+
+            if (totalAdminAlerts > 0) {
+                headerPendingBadge.textContent = totalAdminAlerts;
+                headerPendingBadge.classList.remove('hidden');
+            } else {
+                headerPendingBadge.classList.add('hidden');
+            }
+
+            if (currentSession && currentSession.role === 'club') {
+                portalLabel.textContent = `${currentSession.position || 'Officer'} Portal`;
+                clubActions.classList.remove('hidden');
+                clubActions.classList.add('flex');
+            } else if (currentSession && currentSession.role === 'member') {
+                portalLabel.textContent = "Member Portal";
+                clubActions.classList.remove('hidden');
+                clubActions.classList.add('flex');
+            } else if (currentSession && currentSession.role === 'admin') {
+                adminActions.classList.remove('hidden');
+                adminActions.classList.add('flex');
+            } else {
+                guestActions.classList.remove('hidden');
+                guestActions.classList.add('flex');
+            }
+        }
+
+        // POPULATE DROPDOWNS
+        function populateClubDropdowns() {
+            const selectLogin = document.getElementById('login-club-select');
+            const selectFilter = document.getElementById('filter-club');
+            const selectJoin = document.getElementById('join-club-select');
+
+            selectLogin.innerHTML = '<option value="" disabled selected>-- Choose your organization --</option>';
+            selectFilter.innerHTML = '<option value="ALL">All Organizations</option>';
+            selectJoin.innerHTML = '<option value="" disabled selected>-- Select a Recognized Club --</option>';
+
+            clubs.forEach(c => {
+                selectLogin.innerHTML += `<option value="${c.id}">${escapeHtml(c.name)} ${c.status !== 'Approved' ? `(${c.status})` : ''}</option>`;
+            });
+
+            clubs.filter(c => c.status === 'Approved').forEach(c => {
+                const verifiedTag = c.isVerified ? '✓ Verified' : 'Unverified';
+                selectFilter.innerHTML += `<option value="${c.id}">${escapeHtml(c.name)} (${verifiedTag})</option>`;
+                selectJoin.innerHTML += `<option value="${c.id}">${escapeHtml(c.name)} (${verifiedTag})</option>`;
+            });
+        }
+
+        // RENDER INTERACTIVE EXPANDABLE PUBLIC EVENTS
+        function renderEvents() {
+            const container = document.getElementById('events-container');
+            const emptyState = document.getElementById('events-empty');
+            const countBadge = document.getElementById('event-count-badge');
+
+            const query = document.getElementById('search-input').value.toLowerCase().trim();
+            const clubFilter = document.getElementById('filter-club').value;
+            const dateFilter = document.getElementById('filter-date').value;
+            const todayStr = new Date().toISOString().split('T')[0];
+
+            const approvedClubIds = clubs.filter(c => c.status === 'Approved').map(c => c.id);
+
+            let filtered = events.filter(e => {
+                if (!approvedClubIds.includes(e.clubId)) return false;
+
+                const matchesSearch = e.title.toLowerCase().includes(query) ||
+                                      e.description.toLowerCase().includes(query) ||
+                                      e.location.toLowerCase().includes(query) ||
+                                      e.clubName.toLowerCase().includes(query);
+                
+                const matchesClub = (clubFilter === 'ALL') || (e.clubId === clubFilter);
+
+                let matchesDate = true;
+                if (dateFilter === 'UPCOMING') matchesDate = e.date >= todayStr;
+                else if (dateFilter === 'TODAY') matchesDate = e.date === todayStr;
+
+                return matchesSearch && matchesClub && matchesDate;
+            });
+
+            filtered.sort((a, b) => new Date(a.date + 'T' + a.startTime) - new Date(b.date + 'T' + b.startTime));
+
+            countBadge.textContent = `${filtered.length} Event${filtered.length === 1 ? '' : 's'}`;
+
+            if (filtered.length === 0) {
+                container.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            container.innerHTML = filtered.map(e => {
+                const dateObj = new Date(e.date + 'T00:00:00');
+                const month = dateObj.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
+                const day = dateObj.getDate();
+                const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
+
+                const clubObj = clubs.find(c => c.id === e.clubId);
+                const isVerified = clubObj ? clubObj.isVerified : false;
+                const isExpanded = expandedEvents.has(e.id);
+
+                return `
+                    <div onclick="toggleExpandEvent('${e.id}')" class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition-all cursor-pointer group">
+                        <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+                            <div class="flex items-start gap-4 flex-grow">
+                                <div class="flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-b from-isatu-navy to-isatu-blue text-white rounded-2xl flex flex-col items-center justify-center shadow-sm">
+                                    <span class="text-[10px] font-bold tracking-wider text-amber-300 uppercase">${month}</span>
+                                    <span class="text-xl sm:text-2xl font-black leading-none">${day}</span>
+                                    <span class="text-[9px] text-slate-300 font-medium">${dayName}</span>
+                                </div>
+
+                                <div class="space-y-1">
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-200 flex items-center gap-1">
+                                            <i class="fa-solid fa-users text-[10px]"></i> ${escapeHtml(e.clubName)}
+                                        </span>
+                                        ${isVerified 
+                                            ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200"><i class="fa-solid fa-circle-check"></i> Verified</span>`
+                                            : `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200"><i class="fa-solid fa-clock"></i> Unverified</span>`}
+                                    </div>
+                                    <h4 class="text-base sm:text-lg font-bold text-slate-900 leading-snug group-hover:text-isatu-blue transition-colors">${escapeHtml(e.title)}</h4>
+                                    <div class="flex flex-wrap items-center gap-y-1 gap-x-4 text-xs font-medium text-slate-500">
+                                        <span class="flex items-center gap-1.5">
+                                            <i class="fa-regular fa-clock text-isatu-blue"></i>
+                                            ${formatTime(e.startTime)} - ${formatTime(e.endTime)}
+                                        </span>
+                                        <span class="flex items-center gap-1.5">
+                                            <i class="fa-solid fa-location-dot text-rose-500"></i>
+                                            ${escapeHtml(e.location)}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="self-end md:self-center text-xs font-semibold text-isatu-blue flex items-center gap-1">
+                                <span>${isExpanded ? 'Less Info' : 'Expand Info'}</span>
+                                <i class="fa-solid ${isExpanded ? 'fa-chevron-up' : 'fa-chevron-down'} transition-transform"></i>
+                            </div>
+                        </div>
+
+                        ${isExpanded ? `
+                            <div class="mt-4 pt-4 border-t border-slate-100 text-xs text-slate-700 space-y-2 bg-slate-50/80 p-4 rounded-xl">
+                                <h5 class="font-bold text-slate-900 uppercase tracking-wider text-[11px]">Full Event Description & Guidelines:</h5>
+                                <p class="leading-relaxed whitespace-pre-line">${escapeHtml(e.description)}</p>
+                                <div class="pt-2 flex flex-wrap gap-4 text-slate-500">
+                                    <span><strong>Organizer:</strong> ${escapeHtml(e.clubName)}</span>
+                                    <span><strong>Venue:</strong> ${escapeHtml(e.location)}</span>
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleExpandEvent(eventId) {
+            if (expandedEvents.has(eventId)) expandedEvents.delete(eventId);
+            else expandedEvents.add(eventId);
+            renderEvents();
+        }
+
+        // RENDER INTERACTIVE EXPANDABLE CLUBS DIRECTORY
+        function renderClubsDirectory() {
+            const dir = document.getElementById('clubs-directory');
+            const countBadge = document.getElementById('club-count-badge');
+            
+            const approvedClubs = clubs.filter(c => c.status === 'Approved');
+            countBadge.textContent = `${approvedClubs.length} Approved`;
+
+            dir.innerHTML = approvedClubs.map(c => {
+                const isExpanded = expandedClubs.has(c.id);
+                return `
+                    <div onclick="toggleExpandClub('${c.id}')" class="p-3.5 bg-slate-50 hover:bg-slate-100/80 rounded-xl transition-all border border-slate-200/70 cursor-pointer">
+                        <div class="flex items-start justify-between gap-2">
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-900 flex items-center gap-1">
+                                    ${escapeHtml(c.name)}
+                                    ${c.isVerified 
+                                        ? `<i class="fa-solid fa-circle-check text-emerald-600 text-xs" title="Verified Organization"></i>` 
+                                        : `<i class="fa-solid fa-triangle-exclamation text-amber-500 text-xs" title="Unverified Organization"></i>`}
+                                </h4>
+                                <span class="text-[10px] text-isatu-blue font-semibold">${escapeHtml(c.category)}</span>
+                            </div>
+                            <span class="text-[9px] px-2 py-0.5 font-semibold ${c.isVerified ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'} rounded-md whitespace-nowrap">
+                                ${c.isVerified ? 'Verified' : 'Unverified'}
+                            </span>
+                        </div>
+
+                        ${isExpanded ? `
+                            <div class="mt-3 pt-3 border-t border-slate-200 text-xs space-y-1.5 text-slate-700">
+                                <p class="leading-relaxed">${escapeHtml(c.bio)}</p>
+                                <div class="text-[11px] space-y-0.5 pt-1 text-slate-600">
+                                    <p><strong>President:</strong> ${escapeHtml(c.president || 'N/A')}</p>
+                                    <p><strong>Meeting Room:</strong> ${escapeHtml(c.room || 'TBA')}</p>
+                                    <p><strong>Contact:</strong> ${escapeHtml(c.email || 'N/A')}</p>
+                                </div>
+                            </div>
+                        ` : `
+                            <p class="text-[11px] text-slate-500 mt-1 line-clamp-1">${escapeHtml(c.bio || 'Official ISAT-U student organization.')}</p>
+                        `}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleExpandClub(clubId) {
+            if (expandedClubs.has(clubId)) expandedClubs.delete(clubId);
+            else expandedClubs.add(clubId);
+            renderClubsDirectory();
+        }
+
+        // UNIFIED APPLY MODAL TAB SWITCHING
+        function switchApplyTab(tab) {
+            const tabClub = document.getElementById('tab-apply-club');
+            const tabMember = document.getElementById('tab-apply-member');
+            const formClub = document.getElementById('apply-form');
+            const formMember = document.getElementById('student-join-form');
+
+            if (tab === 'new-club') {
+                tabClub.className = "pb-2 text-xs font-bold border-b-2 border-isatu-blue text-isatu-blue transition-all";
+                tabMember.className = "pb-2 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-all";
+                formClub.classList.remove('hidden');
+                formMember.classList.add('hidden');
+            } else {
+                tabMember.className = "pb-2 text-xs font-bold border-b-2 border-isatu-blue text-isatu-blue transition-all";
+                tabClub.className = "pb-2 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-all";
+                formMember.classList.remove('hidden');
+                formClub.classList.add('hidden');
+            }
+        }
+
+        // NEW CLUB APPLICATION SUBMISSION
+        function handleApplyClub(e) {
+            e.preventDefault();
+            const name = document.getElementById('app-club-name').value.trim();
+            const pass = document.getElementById('app-password').value.trim();
+            const category = document.getElementById('app-category').value;
+            const president = document.getElementById('app-president').value.trim();
+            const email = document.getElementById('app-email').value.trim();
+            const room = document.getElementById('app-room').value.trim();
+            const bio = document.getElementById('app-bio').value.trim();
+
+            if (clubs.some(c => c.name.toLowerCase() === name.toLowerCase())) {
+                showToast('An organization with this name already exists.', 'error');
+                return;
+            }
+
+            const newApplication = {
+                id: 'club_' + Date.now(),
+                name,
+                pass: pass || president,
+                category,
+                president,
+                email,
+                room: room || 'TBA',
+                bio,
+                status: 'Pending',
+                isVerified: false,
+                bylawsStatus: 'Not Submitted',
+                submittedAt: new Date().toLocaleDateString()
+            };
+
+            clubs.push(newApplication);
+            saveToStorage();
+            populateClubDropdowns();
+
+            closeModal('combined-apply-modal');
+            document.getElementById('apply-form').reset();
+
+            showToast('Your application is being processed', 'success');
+
+            currentSession = { role: 'club', position: 'President', data: newApplication };
+            saveToStorage();
+            updateNavigationUI();
+            navTo('dashboard');
+        }
+
+        // STUDENT MEMBERSHIP APPLICATION SUBMISSION
+        function handleStudentApply(e) {
+            e.preventDefault();
+            const clubId = document.getElementById('join-club-select').value;
+            const name = document.getElementById('join-name').value.trim();
+            const password = document.getElementById('join-password').value.trim();
+            const course = document.getElementById('join-course').value.trim();
+            const email = document.getElementById('join-email').value.trim();
+            const reason = document.getElementById('join-reason').value.trim();
+
+            const club = clubs.find(c => c.id === clubId);
+            if (!club) return;
+
+            const newApp = {
+                id: 'app_' + Date.now(),
+                clubId: club.id,
+                clubName: club.name,
+                name,
+                studentId: '2026-' + Math.floor(10000 + Math.random() * 90000),
+                course,
+                email,
+                password,
+                reason,
+                status: 'Pending',
+                role: 'Member',
+                warnings: 0,
+                date: new Date().toLocaleDateString()
+            };
+
+            memberApplications.push(newApp);
+            saveToStorage();
+            closeModal('combined-apply-modal');
+            document.getElementById('student-join-form').reset();
+            showToast(`Membership application submitted to ${club.name}! Status is Pending.`, 'success');
+        }
+
+        // RENDER CLUB / MEMBER DASHBOARD
+        function renderClubDashboard() {
+            if (!currentSession) return;
+
+            if (currentSession.role === 'club') {
+                const club = clubs.find(c => c.id === currentSession.data.id) || currentSession.data;
+
+                document.getElementById('dash-club-name').textContent = club.name;
+                document.getElementById('dash-club-president').textContent = `Logged Officer: ${currentSession.position || 'Officer'} • President: ${club.president || 'N/A'} • ${club.email || ''}`;
+
+                const statusPill = document.getElementById('dash-status-pill');
+                const verifiedPill = document.getElementById('dash-verified-pill');
+                const categoryPill = document.getElementById('dash-category-pill');
+                const bylawsNotice = document.getElementById('dash-bylaws-notice');
+                const bylawsStatusText = document.getElementById('bylaws-status-text');
+                const noticeBox = document.getElementById('dash-status-notice');
+                const mainContent = document.getElementById('dash-main-content');
+                const headerActions = document.getElementById('dash-header-actions');
+
+                categoryPill.textContent = club.category;
+
+                if (club.isVerified) {
+                    verifiedPill.className = "px-3 py-1 text-xs font-bold rounded-full uppercase tracking-wider bg-emerald-400 text-slate-950";
+                    verifiedPill.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Verified Org`;
+                    bylawsNotice.classList.add('hidden');
+                } else {
+                    verifiedPill.className = "px-3 py-1 text-xs font-bold rounded-full uppercase tracking-wider bg-amber-400 text-slate-950 animate-pulse";
+                    verifiedPill.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> Unverified / Pending Bylaws`;
+                    
+                    if (club.status === 'Approved') {
+                        bylawsNotice.classList.remove('hidden');
+                        if (club.bylawsStatus === 'Pending Review') {
+                            bylawsStatusText.textContent = "Status: Bylaws submitted and currently awaiting Main Admin approval.";
+                        } else if (club.bylawsStatus === 'Disapproved') {
+                            bylawsStatusText.textContent = "Status: Previous bylaws submission was rejected by Admin. Please re-upload corrected bylaws.";
+                        } else {
+                            bylawsStatusText.textContent = "Status: No bylaws uploaded yet. Submit bylaws to acquire Verified status.";
+                        }
+                    }
+                }
+
+                if (club.status === 'Pending') {
+                    statusPill.className = "px-3 py-1 text-xs font-bold rounded-full uppercase tracking-wider bg-amber-400 text-slate-900";
+                    statusPill.innerHTML = `<i class="fa-solid fa-hourglass-half mr-1"></i> Registration Pending`;
+
+                    noticeBox.className = "rounded-2xl p-6 bg-amber-50 border border-amber-200 text-amber-900 shadow-sm";
+                    noticeBox.innerHTML = `
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-amber-200 text-amber-800 flex items-center justify-center text-2xl flex-shrink-0">
+                                <i class="fa-solid fa-clock-rotate-left"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-base font-bold text-amber-950">Your application is being processed</h4>
+                                <p class="text-xs text-amber-800 mt-1 leading-relaxed">
+                                    Your club application has been submitted to the Main Admin. You can log in anytime with your credentials to check progress.
+                                </p>
+                            </div>
+                        </div>
+                    `;
+                    noticeBox.classList.remove('hidden');
+                    mainContent.classList.add('hidden');
+                    headerActions.classList.add('hidden');
+
+                } else if (club.status === 'Disapproved') {
+                    statusPill.className = "px-3 py-1 text-xs font-bold rounded-full uppercase tracking-wider bg-rose-500 text-white";
+                    statusPill.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1"></i> Disapproved`;
+
+                    noticeBox.className = "rounded-2xl p-6 bg-rose-50 border border-rose-200 text-rose-900 shadow-sm";
+                    noticeBox.innerHTML = `
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-rose-200 text-rose-800 flex items-center justify-center text-2xl flex-shrink-0">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-base font-bold text-rose-950">Application Disapproved</h4>
+                                <p class="text-xs text-rose-800 mt-1 leading-relaxed">
+                                    Your organization application was not approved by Student Affairs Administration.
+                                </p>
+                            </div>
+                        </div>
+                    `;
+                    noticeBox.classList.remove('hidden');
+                    mainContent.classList.add('hidden');
+                    headerActions.classList.add('hidden');
+
+                } else {
+                    statusPill.className = "px-3 py-1 text-xs font-bold rounded-full uppercase tracking-wider bg-emerald-400 text-slate-950";
+                    statusPill.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Active Org`;
+
+                    noticeBox.classList.add('hidden');
+                    mainContent.classList.remove('hidden');
+                    headerActions.classList.remove('hidden');
+
+                    document.getElementById('section-member-profile').classList.remove('hidden');
+                    document.getElementById('section-club-profile').classList.remove('hidden');
+                    document.getElementById('member-course-field').classList.add('hidden');
+
+                    // Fill forms
+                    document.getElementById('edit-my-name').value = club.president || '';
+                    document.getElementById('edit-my-email').value = club.email || '';
+                    document.getElementById('edit-my-pass').value = club.pass || '';
+
+                    document.getElementById('edit-club-name').value = club.name;
+                    document.getElementById('edit-club-president').value = club.president || 'N/A';
+                    document.getElementById('edit-club-room').value = club.room || '';
+                    document.getElementById('edit-club-email').value = club.email || '';
+                    document.getElementById('edit-club-bio').value = club.bio || '';
+
+                    renderDashEvents(club.id);
+                    renderDashMemberApplications(club.id);
+                    renderApprovedMembersList(club.id);
+                    renderClubChat(club.id);
+                }
+            } else if (currentSession.role === 'member') {
+                const member = memberApplications.find(m => m.id === currentSession.data.id) || currentSession.data;
+                const club = clubs.find(c => c.id === member.clubId) || { name: member.clubName, category: 'Student Organization' };
+
+                document.getElementById('dash-club-name').textContent = `${club.name} (Member Portal)`;
+                document.getElementById('dash-club-president').textContent = `Member Student: ${member.name} • ${member.course} • ${member.email}`;
+
+                const statusPill = document.getElementById('dash-status-pill');
+                const verifiedPill = document.getElementById('dash-verified-pill');
+                const categoryPill = document.getElementById('dash-category-pill');
+                const bylawsNotice = document.getElementById('dash-bylaws-notice');
+                const noticeBox = document.getElementById('dash-status-notice');
+                const mainContent = document.getElementById('dash-main-content');
+                const headerActions = document.getElementById('dash-header-actions');
+
+                categoryPill.textContent = `Member (${member.role || 'Member'})`;
+                bylawsNotice.classList.add('hidden');
+                verifiedPill.classList.add('hidden');
+
+                if (member.status === 'Pending') {
+                    statusPill.className = "px-3 py-1 text-xs font-bold rounded-full uppercase tracking-wider bg-amber-400 text-slate-900 animate-pulse";
+                    statusPill.innerHTML = `<i class="fa-solid fa-hourglass-half mr-1"></i> Membership Pending Approval`;
+
+                    noticeBox.className = "rounded-2xl p-6 bg-amber-50 border border-amber-200 text-amber-900 shadow-sm";
+                    noticeBox.innerHTML = `
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-amber-200 text-amber-800 flex items-center justify-center text-2xl flex-shrink-0">
+                                <i class="fa-solid fa-clock-rotate-left"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-base font-bold text-amber-950">Membership Application Pending</h4>
+                                <p class="text-xs text-amber-800 mt-1 leading-relaxed">
+                                    Your application to join <strong>${escapeHtml(club.name)}</strong> has been submitted. You can only access fully your club dashboard after approval from club officers.
+                                </p>
+                            </div>
+                        </div>
+                    `;
+                    noticeBox.classList.remove('hidden');
+                    mainContent.classList.add('hidden');
+                    headerActions.classList.add('hidden');
+                } else if (member.status === 'Rejected') {
+                    statusPill.className = "px-3 py-1 text-xs font-bold rounded-full uppercase tracking-wider bg-rose-500 text-white";
+                    statusPill.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1"></i> Membership Rejected`;
+
+                    noticeBox.className = "rounded-2xl p-6 bg-rose-50 border border-rose-200 text-rose-900 shadow-sm";
+                    noticeBox.innerHTML = `
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-rose-200 text-rose-800 flex items-center justify-center text-2xl flex-shrink-0">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-base font-bold text-rose-950">Application Declined</h4>
+                                <p class="text-xs text-rose-800 mt-1 leading-relaxed">
+                                    Your membership request for this club was declined by the club officers.
+                                </p>
+                            </div>
+                        </div>
+                    `;
+                    noticeBox.classList.remove('hidden');
+                    mainContent.classList.add('hidden');
+                    headerActions.classList.add('hidden');
+                } else {
+                    // Approved Member
+                    statusPill.className = "px-3 py-1 text-xs font-bold rounded-full uppercase tracking-wider bg-emerald-400 text-slate-950";
+                    statusPill.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Approved Member`;
+
+                    noticeBox.classList.add('hidden');
+                    mainContent.classList.remove('hidden');
+                    headerActions.classList.add('hidden');
+
+                    document.getElementById('section-managed-events').classList.add('hidden');
+                    document.getElementById('section-member-apps').classList.add('hidden');
+                    document.getElementById('section-manage-members').classList.add('hidden');
+                    document.getElementById('section-club-profile').classList.add('hidden');
+
+                    document.getElementById('section-member-profile').classList.remove('hidden');
+                    document.getElementById('member-course-field').classList.remove('hidden');
+
+                    document.getElementById('edit-my-name').value = member.name;
+                    document.getElementById('edit-my-email').value = member.email;
+                    document.getElementById('edit-my-course').value = member.course;
+                    document.getElementById('edit-my-pass').value = member.password;
+
+                    renderClubChat(member.clubId);
+                }
+            }
+        }
+
+        // RENDER CLUB DASHBOARD EVENTS
+        function renderDashEvents(clubId) {
+            const container = document.getElementById('dash-events-list');
+            const emptyState = document.getElementById('dash-events-empty');
+
+            const myEvents = events.filter(e => e.clubId === clubId);
+
+            if (myEvents.length === 0) {
+                container.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            container.innerHTML = myEvents.map(e => `
+                <div class="p-4 rounded-xl border border-slate-200 bg-white hover:border-isatu-blue/50 transition-all flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div class="space-y-1">
+                        <span class="text-[10px] font-bold text-isatu-blue bg-blue-50 px-2 py-0.5 rounded-md">
+                            ${e.date} (${formatTime(e.startTime)} - ${formatTime(e.endTime)})
+                        </span>
+                        <h4 class="font-bold text-slate-900 text-base">${escapeHtml(e.title)}</h4>
+                        <p class="text-xs text-slate-500"><i class="fa-solid fa-location-dot mr-1"></i>${escapeHtml(e.location)}</p>
+                    </div>
+
+                    <div class="flex items-center gap-2 self-end sm:self-center">
+                        <button onclick="editEventPrompt('${e.id}')" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition-colors flex items-center gap-1">
+                            <i class="fa-solid fa-pen"></i> Edit
+                        </button>
+                        <button onclick="deleteEvent('${e.id}')" class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-semibold rounded-lg transition-colors flex items-center gap-1">
+                            <i class="fa-solid fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // UPLOAD BYLAWS LOGIC
+        function handleUploadBylaws(e) {
+            e.preventDefault();
+            if (!currentSession || currentSession.role !== 'club') return;
+
+            const title = document.getElementById('bylaws-title').value.trim();
+            const content = document.getElementById('bylaws-content').value.trim();
+
+            const idx = clubs.findIndex(c => c.id === currentSession.data.id);
+            if (idx !== -1) {
+                clubs[idx].bylawsTitle = title;
+                clubs[idx].bylawsContent = content;
+                clubs[idx].bylawsStatus = 'Pending Review';
+
+                saveToStorage();
+                closeModal('bylaws-modal');
+                document.getElementById('bylaws-form').reset();
+                renderClubDashboard();
+                showToast('Bylaws submitted to Main Admin for verification!', 'success');
+            }
+        }
+
+        // MEMBER APPLICATIONS IN CLUB PORTAL
+        function renderDashMemberApplications(clubId) {
+            const list = document.getElementById('dash-member-apps-list');
+            const countBadge = document.getElementById('dash-member-apps-count');
+            
+            const myApps = memberApplications.filter(a => a.clubId === clubId && a.status === 'Pending');
+            countBadge.textContent = `${myApps.length} Requests`;
+
+            if (myApps.length === 0) {
+                list.innerHTML = `<p class="text-xs text-slate-400 py-4 text-center border border-dashed rounded-xl">No pending membership applications.</p>`;
+                return;
+            }
+
+            list.innerHTML = myApps.map(a => `
+                <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h4 class="font-bold text-slate-900 text-sm">${escapeHtml(a.name)}</h4>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">${a.status}</span>
+                        </div>
+                        <p class="text-slate-500 font-medium">${escapeHtml(a.course)} • ID: ${escapeHtml(a.studentId)} • ${escapeHtml(a.email)}</p>
+                        <p class="text-slate-600 mt-1 italic">"${escapeHtml(a.reason)}"</p>
+                    </div>
+
+                    <div class="flex items-center gap-1.5 self-end sm:self-center">
+                        <button onclick="approveMemberApp('${a.id}')" class="px-2.5 py-1.5 bg-emerald-600 text-white font-bold rounded-lg hover:bg-emerald-700">Approve</button>
+                        <button onclick="rejectMemberApp('${a.id}')" class="px-2.5 py-1.5 bg-rose-600 text-white font-bold rounded-lg hover:bg-rose-700">Reject</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // RENDER APPROVED MEMBERS WITH WARNING SYSTEM & PRESIDENT ROLE DELEGATION
+        function renderApprovedMembersList(clubId) {
+            const list = document.getElementById('dash-approved-members-list');
+            const countBadge = document.getElementById('dash-approved-members-count');
+
+            const approvedMembers = memberApplications.filter(a => a.clubId === clubId && a.status === 'Approved');
+            countBadge.textContent = `${approvedMembers.length} Members`;
+
+            if (approvedMembers.length === 0) {
+                list.innerHTML = `<p class="text-xs text-slate-400 py-4 text-center border border-dashed rounded-xl">No active club members yet.</p>`;
+                return;
+            }
+
+            const currentPos = currentSession ? currentSession.position : '';
+            const canWarn = ['President', 'Vice President', 'Secretary'].includes(currentPos);
+            const isPres = (currentPos === 'President');
+
+            list.innerHTML = approvedMembers.map(m => `
+                <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3 text-xs">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                        <div>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <h4 class="font-bold text-slate-900 text-sm">${escapeHtml(m.name)}</h4>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-isatu-blue/10 text-isatu-blue border border-isatu-blue/20">
+                                    <i class="fa-solid fa-user-tag mr-1"></i>${m.role || 'Member'}
+                                </span>
+                                ${m.warnings > 0 ? `
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200 animate-pulse" title="${escapeHtml(m.warningReason || 'Officer warning')}">
+                                        <i class="fa-solid fa-triangle-exclamation mr-1"></i>${m.warnings} Warning${m.warnings > 1 ? 's' : ''}
+                                    </span>
+                                ` : ''}
+                            </div>
+                            <p class="text-slate-500 font-medium mt-0.5">${escapeHtml(m.course)} • ID: ${escapeHtml(m.studentId)} • ${escapeHtml(m.email)}</p>
+                        </div>
+
+                        <div class="flex items-center gap-2 self-end sm:self-center flex-wrap">
+                            ${canWarn ? `
+                                <button onclick="issueMemberWarning('${m.id}')" class="px-2.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg shadow-sm transition-colors flex items-center gap-1">
+                                    <i class="fa-solid fa-circle-exclamation"></i> Give Warning
+                                </button>
+                            ` : ''}
+
+                            <button onclick="removeClubMember('${m.id}')" class="px-2.5 py-1.5 bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold rounded-lg transition-colors flex items-center gap-1">
+                                <i class="fa-solid fa-user-minus"></i> Remove
+                            </button>
+                        </div>
+                    </div>
+
+                    ${isPres ? `
+                        <div class="pt-2 border-t border-slate-200/80 flex items-center gap-2">
+                            <span class="text-[11px] font-bold text-slate-600">Assign Role:</span>
+                            <select onchange="assignMemberRole('${m.id}', this.value)" class="bg-white border border-slate-300 rounded-lg px-2 py-1 text-xs focus:ring-2 focus:ring-isatu-blue focus:outline-none">
+                                <option value="Member" ${m.role === 'Member' ? 'selected' : ''}>Regular Member</option>
+                                <option value="Vice President" ${m.role === 'Vice President' ? 'selected' : ''}>Vice President</option>
+                                <option value="Secretary" ${m.role === 'Secretary' ? 'selected' : ''}>Secretary</option>
+                                <option value="Treasurer" ${m.role === 'Treasurer' ? 'selected' : ''}>Treasurer</option>
+                                <option value="Auditor" ${m.role === 'Auditor' ? 'selected' : ''}>Auditor</option>
+                                <option value="Appointee 1" ${m.role === 'Appointee 1' ? 'selected' : ''}>Appointee 1</option>
+                                <option value="Appointee 2" ${m.role === 'Appointee 2' ? 'selected' : ''}>Appointee 2</option>
+                            </select>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // ISSUE WARNING (Secretary and above)
+        function issueMemberWarning(memberId) {
+            const member = memberApplications.find(m => m.id === memberId);
+            if (!member) return;
+
+            const reason = prompt(`Enter warning details for ${member.name}:`, "Unexcused absence / Policy breach");
+            if (reason !== null) {
+                member.warnings = (member.warnings || 0) + 1;
+                member.warningReason = reason;
+                saveToStorage();
+                renderClubDashboard();
+                showToast(`Warning issued to ${member.name}!`, 'info');
+            }
+        }
+
+        // ASSIGN MEMBER ROLE (Presidents only)
+        function assignMemberRole(memberId, newRole) {
+            const member = memberApplications.find(m => m.id === memberId);
+            if (!member) return;
+
+            member.role = newRole;
+            saveToStorage();
+            renderClubDashboard();
+            showToast(`Assigned ${member.name} as ${newRole}!`, 'success');
+        }
+
+        function removeClubMember(memberId) {
+            if (confirm('Are you sure you want to remove this member from the organization?')) {
+                memberApplications = memberApplications.filter(m => m.id !== memberId);
+                saveToStorage();
+                renderClubDashboard();
+                showToast('Member removed from club.', 'info');
+            }
+        }
+
+        function approveMemberApp(appId) {
+            const app = memberApplications.find(a => a.id === appId);
+            if (app) {
+                app.status = 'Approved';
+                saveToStorage();
+                renderClubDashboard();
+                showToast(`Accepted ${app.name} into the club!`, 'success');
+            }
+        }
+
+        function rejectMemberApp(appId) {
+            const app = memberApplications.find(a => a.id === appId);
+            if (app) {
+                app.status = 'Rejected';
+                saveToStorage();
+                renderClubDashboard();
+                showToast(`Application rejected.`, 'info');
+            }
+        }
+
+        // INTRA-ORGANIZATION MEMBER CHAT LOGIC
+        function renderClubChat(clubId) {
+            const chatBox = document.getElementById('club-chat-messages');
+            const clubMsgs = chats.filter(c => c.clubId === clubId);
+
+            if (clubMsgs.length === 0) {
+                chatBox.innerHTML = `<div class="text-center text-slate-400 py-10">No messages in member channel yet. Start chatting!</div>`;
+                return;
+            }
+
+            chatBox.innerHTML = clubMsgs.map(m => `
+                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="font-bold text-isatu-blue text-[11px]">${escapeHtml(m.sender)}</span>
+                        <span class="text-[9px] text-slate-400">${m.time}</span>
+                    </div>
+                    <p class="text-slate-700 leading-relaxed">${escapeHtml(m.text)}</p>
+                </div>
+            `).join('');
+
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function handleSendClubChatMessage(e) {
+            e.preventDefault();
+            if (!currentSession) return;
+
+            const textInput = document.getElementById('chat-input-text');
+            const text = textInput.value.trim();
+            if (!text) return;
+
+            let senderName = "";
+            let clubId = "";
+
+            if (currentSession.role === 'club') {
+                clubId = currentSession.data.id;
+                senderName = `${currentSession.data.president || 'Officer'} (${currentSession.position || 'Officer'})`;
+            } else if (currentSession.role === 'member') {
+                const member = memberApplications.find(m => m.id === currentSession.data.id) || currentSession.data;
+                clubId = member.clubId;
+                senderName = `${member.name} (${member.role || 'Member'})`;
+            }
+
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            const newMsg = {
+                id: 'msg_' + Date.now(),
+                clubId,
+                sender: senderName,
+                text,
+                time: timeStr
+            };
+
+            chats.push(newMsg);
+            saveToStorage();
+            textInput.value = '';
+            renderClubChat(clubId);
+        }
+
+        // PERSONAL PROFILE UPDATE (FOR MEMBERS AND OFFICERS)
+        function handleSaveMemberPersonalProfile(e) {
+            e.preventDefault();
+            if (!currentSession) return;
+
+            const name = document.getElementById('edit-my-name').value.trim();
+            const email = document.getElementById('edit-my-email').value.trim();
+            const pass = document.getElementById('edit-my-pass').value.trim();
+
+            if (currentSession.role === 'member') {
+                const course = document.getElementById('edit-my-course').value.trim();
+                const idx = memberApplications.findIndex(m => m.id === currentSession.data.id);
+                if (idx !== -1) {
+                    memberApplications[idx].name = name;
+                    memberApplications[idx].email = email;
+                    memberApplications[idx].course = course;
+                    memberApplications[idx].password = pass;
+
+                    currentSession.data = memberApplications[idx];
+                    saveToStorage();
+                    renderClubDashboard();
+                    showToast('Personal profile updated successfully!', 'success');
+                }
+            } else if (currentSession.role === 'club') {
+                const idx = clubs.findIndex(c => c.id === currentSession.data.id);
+                if (idx !== -1) {
+                    if (currentSession.position === 'President') {
+                        clubs[idx].president = name;
+                    }
+                    clubs[idx].email = email;
+                    clubs[idx].pass = pass;
+
+                    currentSession.data = clubs[idx];
+                    saveToStorage();
+                    renderClubDashboard();
+                    showToast('Officer profile updated!', 'success');
+                }
+            }
+        }
+
+        // ADMIN PORTAL & EXPANDABLE CLUB GOVERNANCE
+        function renderAdminDashboard() {
+            const pendingList = document.getElementById('admin-pending-list');
+            const pendingEmpty = document.getElementById('admin-pending-empty');
+            const pendingBadge = document.getElementById('admin-pending-badge');
+            const pendingPill = document.getElementById('admin-pending-pill-count');
+
+            const bylawsList = document.getElementById('admin-bylaws-list');
+            const bylawsEmpty = document.getElementById('admin-bylaws-empty');
+            const bylawsBadge = document.getElementById('admin-bylaws-badge');
+            const bylawsPill = document.getElementById('admin-bylaws-pill-count');
+
+            const activeList = document.getElementById('admin-clubs-list');
+            const activeBadge = document.getElementById('admin-active-badge');
+
+            const pendingClubs = clubs.filter(c => c.status === 'Pending');
+            const bylawsRequests = clubs.filter(c => c.bylawsStatus === 'Pending Review');
+            const activeClubs = clubs.filter(c => c.status === 'Approved');
+
+            pendingBadge.textContent = `${pendingClubs.length} Pending`;
+            pendingPill.textContent = pendingClubs.length;
+            bylawsBadge.textContent = `${bylawsRequests.length} Requests`;
+            bylawsPill.textContent = bylawsRequests.length;
+            activeBadge.textContent = `${activeClubs.length} Recognized`;
+
+            if (pendingClubs.length === 0) {
+                pendingList.innerHTML = '';
+                pendingEmpty.classList.remove('hidden');
+            } else {
+                pendingEmpty.classList.add('hidden');
+                pendingList.innerHTML = pendingClubs.map(c => `
+                    <div class="p-5 bg-amber-50/50 border border-amber-200 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div class="space-y-1 max-w-2xl text-xs">
+                            <span class="px-2.5 py-0.5 bg-amber-200 text-amber-900 rounded-md font-bold uppercase">${escapeHtml(c.category)}</span>
+                            <h4 class="text-lg font-bold text-slate-900">${escapeHtml(c.name)}</h4>
+                            <p class="font-semibold text-slate-700">President/Lead: ${escapeHtml(c.president)} (${escapeHtml(c.email)})</p>
+                            <p class="text-slate-600 mt-1">${escapeHtml(c.bio)}</p>
+                        </div>
+
+                        <div class="flex items-center gap-2 self-end md:self-center">
+                            <button onclick="adminApproveClub('${c.id}')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow">Approve</button>
+                            <button onclick="adminDisapproveClub('${c.id}')" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl shadow">Disapprove</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            if (bylawsRequests.length === 0) {
+                bylawsList.innerHTML = '';
+                bylawsEmpty.classList.remove('hidden');
+            } else {
+                bylawsEmpty.classList.add('hidden');
+                bylawsList.innerHTML = bylawsRequests.map(c => `
+                    <div class="p-5 bg-blue-50/50 border border-blue-200 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs">
+                        <div class="space-y-1">
+                            <span class="px-2.5 py-0.5 bg-blue-100 text-isatu-blue rounded font-bold">${escapeHtml(c.name)}</span>
+                            <h4 class="text-base font-bold text-slate-900 mt-1">${escapeHtml(c.bylawsTitle || 'Constitution & Bylaws')}</h4>
+                            <p class="text-slate-700 bg-white p-3 rounded-xl border border-slate-200 mt-1">${escapeHtml(c.bylawsContent)}</p>
+                        </div>
+
+                        <div class="flex items-center gap-2 self-end md:self-center whitespace-nowrap">
+                            <button onclick="adminApproveBylaws('${c.id}')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow">Grant Verified Status</button>
+                            <button onclick="adminRejectBylaws('${c.id}')" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl shadow">Reject Bylaws</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Interactive Expandable Active Clubs in Admin Governance
+            activeList.innerHTML = activeClubs.map(c => {
+                const isExpanded = expandedAdminClubs.has(c.id);
+                const clubMembers = memberApplications.filter(m => m.clubId === c.id && m.status === 'Approved');
+                const clubEvents = events.filter(e => e.clubId === c.id);
+
+                return `
+                    <div class="p-5 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
+                        <div onclick="toggleExpandAdminClub('${c.id}')" class="flex justify-between items-start cursor-pointer group">
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-base flex items-center gap-2 group-hover:text-isatu-blue transition-colors">
+                                    ${escapeHtml(c.name)}
+                                    ${c.isVerified ? `<i class="fa-solid fa-circle-check text-emerald-600 text-sm"></i>` : `<i class="fa-solid fa-clock text-amber-500 text-sm"></i>`}
+                                </h4>
+                                <p class="text-xs text-isatu-blue font-medium mt-0.5">${escapeHtml(c.category)} • ${escapeHtml(c.room || 'No room')} • President: ${escapeHtml(c.president || 'N/A')}</p>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="px-2 py-0.5 ${c.isVerified ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'} text-[10px] font-bold rounded-md">
+                                    ${c.isVerified ? 'Verified' : 'Unverified'}
+                                </span>
+                                <i class="fa-solid ${isExpanded ? 'fa-chevron-up' : 'fa-chevron-down'} text-slate-400"></i>
+                            </div>
+                        </div>
+
+                        ${isExpanded ? `
+                            <div class="pt-3 border-t border-slate-200 text-xs space-y-4">
+                                <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-3">
+                                    <div class="flex items-center justify-between">
+                                        <h5 class="font-bold text-slate-900 uppercase tracking-wider text-[11px]">Reassign Club President (Admin Exclusive Authority)</h5>
+                                        <button onclick="adminReassignPresident('${c.id}')" class="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg shadow-sm">
+                                            Change President
+                                        </button>
+                                    </div>
+                                    <p class="text-slate-600">Current President: <strong>${escapeHtml(c.president)}</strong></p>
+                                </div>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-slate-700">
+                                    <div class="bg-white p-3 rounded-xl border border-slate-200">
+                                        <h6 class="font-bold text-slate-900 mb-1">Approved Roster (${clubMembers.length})</h6>
+                                        ${clubMembers.length === 0 ? '<p class="text-slate-400 italic">No members</p>' : clubMembers.map(m => `<p class="py-0.5">• ${escapeHtml(m.name)} (${escapeHtml(m.role || 'Member')}) ${m.warnings > 0 ? `<span class="text-rose-600 font-bold">[${m.warnings} Warn]</span>` : ''}</p>`).join('')}
+                                    </div>
+                                    <div class="bg-white p-3 rounded-xl border border-slate-200">
+                                        <h6 class="font-bold text-slate-900 mb-1">Posted Events (${clubEvents.length})</h6>
+                                        ${clubEvents.length === 0 ? '<p class="text-slate-400 italic">No events</p>' : clubEvents.map(e => `<p class="py-0.5">• ${escapeHtml(e.title)} (${e.date})</p>`).join('')}
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-end pt-2">
+                                    <button onclick="adminDeleteClub('${c.id}')" class="px-3 py-1.5 bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold rounded-lg transition-colors">
+                                        <i class="fa-solid fa-trash mr-1"></i> Completely Delete Organization
+                                    </button>
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleExpandAdminClub(clubId) {
+            if (expandedAdminClubs.has(clubId)) expandedAdminClubs.delete(clubId);
+            else expandedAdminClubs.add(clubId);
+            renderAdminDashboard();
+        }
+
+        // ADMIN EXCLUSIVE PRESIDENT REASSIGNMENT
+        function adminReassignPresident(clubId) {
+            const club = clubs.find(c => c.id === clubId);
+            if (!club) return;
+
+            const newPres = prompt(`Enter new President name for "${club.name}":`, club.president);
+            if (newPres && newPres.trim() !== '') {
+                club.president = newPres.trim();
+                saveToStorage();
+                renderAdminDashboard();
+                showToast(`Reassigned President of ${club.name} to ${newPres.trim()}!`, 'success');
+            }
+        }
+
+        function adminApproveBylaws(id) {
+            const club = clubs.find(c => c.id === id);
+            if (club) {
+                club.isVerified = true;
+                club.bylawsStatus = 'Approved';
+                saveToStorage();
+                populateClubDropdowns();
+                renderAdminDashboard();
+                showToast(`"${club.name}" granted Verified Status!`, 'success');
+            }
+        }
+
+        function adminRejectBylaws(id) {
+            const club = clubs.find(c => c.id === id);
+            if (club) {
+                club.bylawsStatus = 'Disapproved';
+                saveToStorage();
+                renderAdminDashboard();
+                showToast(`Bylaws rejected for "${club.name}".`, 'info');
+            }
+        }
+
+        function adminApproveClub(id) {
+            const club = clubs.find(c => c.id === id);
+            if (club) {
+                club.status = 'Approved';
+                saveToStorage();
+                populateClubDropdowns();
+                renderAdminDashboard();
+                showToast(`"${club.name}" application approved!`, 'success');
+            }
+        }
+
+        function adminDisapproveClub(id) {
+            const club = clubs.find(c => c.id === id);
+            if (club) {
+                club.status = 'Disapproved';
+                saveToStorage();
+                populateClubDropdowns();
+                renderAdminDashboard();
+                showToast(`"${club.name}" application disapproved.`, 'info');
+            }
+        }
+
+        function adminDeleteClub(id) {
+            const club = clubs.find(c => c.id === id);
+            if (!club) return;
+
+            if (confirm(`Are you sure you want to completely delete "${club.name}"?`)) {
+                clubs = clubs.filter(c => c.id !== id);
+                events = events.filter(e => e.clubId !== id);
+                saveToStorage();
+                populateClubDropdowns();
+                renderAdminDashboard();
+                showToast(`Deleted organization "${club.name}".`, 'info');
+            }
+        }
+
+        // EVENT MODAL LOGIC
+        function handleSaveEvent(e) {
+            e.preventDefault();
+            if (!currentSession || currentSession.role !== 'club') return;
+
+            const club = clubs.find(c => c.id === currentSession.data.id);
+            if (!club || club.status !== 'Approved') {
+                showToast('Only approved organizations can publish events.', 'error');
+                return;
+            }
+
+            const eventId = document.getElementById('event-id').value;
+            const title = document.getElementById('event-title').value.trim();
+            const date = document.getElementById('event-date').value;
+            const location = document.getElementById('event-location').value.trim();
+            const startTime = document.getElementById('event-start-time').value;
+            const endTime = document.getElementById('event-end-time').value;
+            const description = document.getElementById('event-description').value.trim();
+
+            if (eventId) {
+                const idx = events.findIndex(ev => ev.id === eventId);
+                if (idx !== -1) {
+                    events[idx] = { ...events[idx], title, date, location, startTime, endTime, description };
+                    showToast('Event updated!', 'success');
+                }
+            } else {
+                const newEv = {
+                    id: 'ev_' + Date.now(),
+                    clubId: club.id,
+                    clubName: club.name,
+                    title, date, location, startTime, endTime, description
+                };
+                events.push(newEv);
+                showToast('Event published successfully!', 'success');
+            }
+
+            saveToStorage();
+            closeModal('add-event-modal');
+            document.getElementById('event-form').reset();
+            renderClubDashboard();
+        }
+
+        function editEventPrompt(id) {
+            const ev = events.find(e => e.id === id);
+            if (!ev) return;
+
+            document.getElementById('event-modal-title').textContent = 'Edit Event Details';
+            document.getElementById('event-id').value = ev.id;
+            document.getElementById('event-title').value = ev.title;
+            document.getElementById('event-date').value = ev.date;
+            document.getElementById('event-location').value = ev.location;
+            document.getElementById('event-start-time').value = ev.startTime;
+            document.getElementById('event-end-time').value = ev.endTime;
+            document.getElementById('event-description').value = ev.description;
+
+            openModal('add-event-modal');
+        }
+
+        function deleteEvent(id) {
+            if (confirm('Remove event schedule?')) {
+                events = events.filter(e => e.id !== id);
+                saveToStorage();
+                renderClubDashboard();
+                showToast('Event removed.', 'info');
+            }
+        }
+
+        function handleSaveClubProfile(e) {
+            e.preventDefault();
+            if (!currentSession || currentSession.role !== 'club') return;
+
+            const name = document.getElementById('edit-club-name').value.trim();
+            const room = document.getElementById('edit-club-room').value.trim();
+            const email = document.getElementById('edit-club-email').value.trim();
+            const bio = document.getElementById('edit-club-bio').value.trim();
+
+            const idx = clubs.findIndex(c => c.id === currentSession.data.id);
+            if (idx !== -1) {
+                clubs[idx].name = name;
+                clubs[idx].room = room;
+                clubs[idx].email = email;
+                clubs[idx].bio = bio;
+
+                currentSession.data = clubs[idx];
+
+                events.forEach(ev => {
+                    if (ev.clubId === clubs[idx].id) ev.clubName = name;
+                });
+
+                saveToStorage();
+                populateClubDropdowns();
+                renderClubDashboard();
+                showToast('Club details updated!', 'success');
+            }
+        }
+
+        // LOGIN TAB & HANDLERS
+        function switchLoginRole(role) {
+            const tabOfficer = document.getElementById('tab-officer');
+            const tabMember = document.getElementById('tab-member');
+            const formOfficer = document.getElementById('club-officer-login-form');
+            const formMember = document.getElementById('club-member-login-form');
+
+            if (role === 'officer') {
+                tabOfficer.className = "pb-2 text-xs font-bold border-b-2 border-isatu-blue text-isatu-blue transition-all";
+                tabMember.className = "pb-2 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-all";
+                formOfficer.classList.remove('hidden');
+                formMember.classList.add('hidden');
+            } else {
+                tabMember.className = "pb-2 text-xs font-bold border-b-2 border-isatu-blue text-isatu-blue transition-all";
+                tabOfficer.className = "pb-2 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-all";
+                formMember.classList.remove('hidden');
+                formOfficer.classList.add('hidden');
+            }
+        }
+
+        function handleClubOfficerLogin(e) {
+            e.preventDefault();
+            const clubId = document.getElementById('login-club-select').value;
+            const position = document.getElementById('login-officer-position').value;
+            const password = document.getElementById('login-club-password').value;
+
+            const targetClub = clubs.find(c => c.id === clubId);
+
+            if (!targetClub) {
+                showToast('Please select a valid club.', 'error');
+                return;
+            }
+
+            if (targetClub.pass === password || password === targetClub.president) {
+                currentSession = { role: 'club', position, data: targetClub };
+                saveToStorage();
+                updateNavigationUI();
+                closeModal('login-modal');
+                document.getElementById('club-officer-login-form').reset();
+                showToast(`Logged in as ${targetClub.name} (${position})`, 'success');
+                navTo('dashboard');
+            } else {
+                showToast('Incorrect club password.', 'error');
+            }
+        }
+
+        function handleClubMemberLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-member-email').value.trim().toLowerCase();
+            const password = document.getElementById('login-member-password').value.trim();
+
+            const targetMember = memberApplications.find(m => m.email.toLowerCase() === email && (m.password === password || m.studentId === password));
+
+            if (!targetMember) {
+                showToast('Invalid member email or password.', 'error');
+                return;
+            }
+
+            currentSession = { role: 'member', data: targetMember };
+            saveToStorage();
+            updateNavigationUI();
+            closeModal('login-modal');
+            document.getElementById('club-member-login-form').reset();
+            showToast(`Logged in as member (${targetMember.name})`, 'success');
+            navTo('dashboard');
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const pass = document.getElementById('admin-password').value;
+
+            if (pass === ADMIN_MASTER_PASSWORD) {
+                currentSession = { role: 'admin', data: { name: 'Main Admin' } };
+                saveToStorage();
+                updateNavigationUI();
+                closeModal('admin-login-modal');
+                document.getElementById('admin-login-form').reset();
+                showToast('Authenticated as Main Admin!', 'success');
+                navTo('admin');
+            } else {
+                showToast('Invalid Main Admin Password!', 'error');
+            }
+        }
+
+        function logoutSession() {
+            currentSession = null;
+            saveToStorage();
+            updateNavigationUI();
+            navTo('home');
+            showToast('Logged out.', 'info');
+        }
+
+        function clearFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('filter-club').value = 'ALL';
+            document.getElementById('filter-date').value = 'ALL';
+            renderEvents();
+        }
+
+        function openModal(modalId) {
+            if (modalId === 'add-event-modal' && !document.getElementById('event-id').value) {
+                document.getElementById('event-modal-title').textContent = 'Publish New Event';
+                document.getElementById('event-form').reset();
+                document.getElementById('event-id').value = '';
+            }
+            document.getElementById(modalId).classList.remove('hidden');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        function formatTime(timeStr) {
+            if (!timeStr) return '';
+            const [h, m] = timeStr.split(':');
+            let hour = parseInt(h, 10);
+            const ampm = hour >= 12 ? 'PM' : 'AM';
+            hour = hour % 12 || 12;
+            return `${hour}:${m} ${ampm}`;
+        }
+
+        function escapeHtml(str) {
+            return String(str || '').replace(/[&<>"']/g, function (m) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                }[m];
+            });
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let bgClass = 'bg-slate-800 text-white';
+            let icon = 'fa-circle-info';
+            if (type === 'success') {
+                bgClass = 'bg-emerald-600 text-white';
+                icon = 'fa-circle-check';
+            } else if (type === 'error') {
+                bgClass = 'bg-rose-600 text-white';
+                icon = 'fa-triangle-exclamation';
+            }
+
+            toast.className = `${bgClass} px-4 py-3 rounded-xl shadow-lg text-xs font-semibold flex items-center gap-2.5 transition-all duration-300 transform translate-y-2 pointer-events-auto`;
+            toast.innerHTML = `<i class="fa-solid ${icon} text-sm"></i> <span>${escapeHtml(message)}</span>`;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', '-translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
